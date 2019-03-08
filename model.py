@@ -45,4 +45,12 @@ class Model:
 
 
 class Instruction:
-    pass
+    """Defines an instruction used to build a model."""
+
+    def apply(self, model):
+        """Apply the instruction to a model, returning a list of errors."""
+        raise NotImplementedError()
+
+    def copy(self):
+        """Return a copy of the instruction."""
+        return self
