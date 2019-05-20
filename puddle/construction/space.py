@@ -5,7 +5,7 @@ import tensorflow as tf
 class Space(Variable):
     def __init__(self, shape):
         """Create a new space."""
-        super(shape)
+        super().__init__(shape)
 
     def sampler(self, batch_size=None):
         """Create a tensorflow node that samples from the space."""
