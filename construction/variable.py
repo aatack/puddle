@@ -3,15 +3,17 @@ class Variable:
         """Create a new variable."""
         self.shape = shape
 
-    def build(self, sampling_information):
+    def build(self, auto_sample, exceptions=set()):
         """Build a tensorflow representation of the variable."""
         raise NotImplementedError()
 
-
-class IndependentVariable(Variable):
-    def __init__(self, shape=[], lower=0.0, upper=1.0):
-        """Create a new independent variable."""
-        super(shape)
+    @property
+    def intrinsic_dimension(self):
+        """Calculate the intrinsic dimension of the variable."""
+        product = 1
+        for dimension in self.shape:
+            product *= dimension
+        return product
 
 
 class DependentVariable(Variable):
