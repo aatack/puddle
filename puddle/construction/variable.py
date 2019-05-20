@@ -4,7 +4,7 @@ class Variable:
         self.shape = shape
         self.intrinsic_dimension = intrinsic_dimension or self.represented_dimension
 
-    def build(self, default_build_parameters, specific_build_parameters={}):
+    def build(self, builder):
         """Build a tensorflow representation of the variable."""
         raise NotImplementedError()
 
@@ -24,6 +24,6 @@ class DependentVariable(Variable):
         self.arguments = arguments if isinstance(arguments, list) else [arguments]
         self.layers = layers if isinstance(layers, list) else [layers]
 
-    def build(self, default_build_parameters, specific_build_parameters={}):
+    def build(self, builder):
         """Build a tensorflow representation of the variable."""
         raise NotImplementedError()

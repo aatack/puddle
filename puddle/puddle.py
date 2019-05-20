@@ -1,6 +1,6 @@
 import puddle.construction.space as _space
 import puddle.construction.variable as _variable
-import puddle.construction.buildpars as _buildpars
+import puddle.construction.builder as _builder
 
 
 space = _space.Space
@@ -9,4 +9,5 @@ vector = _space.Vector
 
 variable = _variable
 
-buildpars = _buildpars.BuildParameters
+builder = _builder.Builder
+buildpars = _builder.BuildParameters
