@@ -27,6 +27,20 @@ class Space(Variable):
         )
         return tf.placeholder(tf.float32, shape=shape)
 
+    def build(self, default_build_parameters, specific_build_parameters={}):
+        """Build a tensorflow representation of the variable."""
+        buildpars = (
+            specific_build_parameters[self]
+            if self in specific_build_parameters
+            else default_build_parameters
+        )
+        if buildpars.sampler:
+            return self.sampler(batch_size=buildpars.batch_size)
+        elif buildpars.placeholder:
+            return self.placeholder(batch_size=buildpars.batch_size)
+        else:
+            raise ValueError("indeterminate build parameters")
+
 
 class Scalar(Space):
     def __init__(self, lower=0.0, upper=1.0):

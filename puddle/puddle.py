@@ -1,9 +1,12 @@
-import puddle.construction.space as space
-import puddle.construction.variable as variable
+import puddle.construction.space as _space
+import puddle.construction.variable as _variable
+import puddle.construction.buildpars as _buildpars
 
 
-Space = space.Space
-scalar = space.Scalar
-vector = space.Vector
+space = _space.Space
+scalar = _space.Scalar
+vector = _space.Vector
 
-Variable = variable
+variable = _variable
+
+buildpars = _buildpars.BuildParameters
