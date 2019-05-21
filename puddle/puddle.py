@@ -15,7 +15,6 @@ vector = _space.Vector
 variable = _variable
 
 builder = _builder.Builder
-buildpars = _builder.BuildParameters
 
 constant = _constant.Constant
 

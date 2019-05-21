@@ -1,7 +1,7 @@
 class Variable:
     def __init__(self, shape, intrinsic_dimension=None):
         """Create a new variable."""
-        self.shape = shape
+        self.shape = tuple(shape)
         self.intrinsic_dimension = intrinsic_dimension or self.represented_dimension
         self.rank = len(self.shape)
 
@@ -19,7 +19,7 @@ class Variable:
 
 
 class DependentVariable(Variable):
-    def __init__(self, arguments, layers, shape=[]):
+    def __init__(self, arguments, layers):
         """Create a dependent variable which is calculated from dependents."""
         super(shape)
         self.arguments = arguments if isinstance(arguments, list) else [arguments]

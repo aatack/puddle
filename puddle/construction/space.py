@@ -7,34 +7,14 @@ class Space(Variable):
         """Create a new space."""
         super().__init__(shape)
 
-    def sampler(self, batch_size=None):
-        """Create a tensorflow node that samples from the space."""
-        raise NotImplementedError()
-
-    def placeholder(self, batch_size=None):
-        """
-        Create a tensorflow node that allows values to be fed in.
-
-        To exclude batches, put set the batch size to None.  For a variable batch
-        size, set it to 0.
-        """
-        shape = (
-            self.shape
-            if batch_size is None
-            else (None,) + tuple(self.shape)
-            if batch_size <= 0
-            else (batch_size,) + tuple(self.shape)
-        )
+    def placeholder(self):
+        """Create a tensorflow node that allows values to be fed in."""
+        shape = (None,) + self.shape
         return tf.placeholder(tf.float32, shape=shape)
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
-        parameters = builder.get_parameters(self)
-        return (
-            self.sampler(batch_size=parameters.batch_size)
-            if parameters.sampler
-            else self.placeholder(batch_size=parameters.batch_size)
-        )
+        return self.placeholder()
 
 
 class Scalar(Space):
@@ -44,11 +24,6 @@ class Scalar(Space):
         self.lower = lower
         self.upper = upper
 
-    def sampler(self, batch_size=None):
-        """Sample uniformly from the bounded scalar."""
-        shape = () if batch_size is None else (batch_size,)
-        return tf.random.uniform(shape, minval=self.lower, maxval=self.upper)
-
 
 class Vector(Space):
     def __init__(self, dimensions, lower=0.0, upper=1.0):
@@ -57,10 +32,3 @@ class Vector(Space):
         self.dimensions = dimensions
         self.lower = lower
         self.upper = upper
-
-    def sampler(self, batch_size=None):
-        """Sample uniformly from the bounded hypercube."""
-        shape = (
-            (self.dimensions,) if batch_size is None else (batch_size, self.dimensions)
-        )
-        return tf.random.uniform(shape, minval=self.lower, maxval=self.upper)
