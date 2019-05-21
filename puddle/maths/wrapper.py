@@ -1,7 +1,7 @@
 from puddle.construction.variable import Variable
 
 
-def wrap(tensorflow_function, shape_function):
+def wrap_tf_function(tensorflow_function, shape_function):
     """Wrap a tensorflow function to be used to transform variables."""
 
     def inner_wrap(*args, **kwargs):
