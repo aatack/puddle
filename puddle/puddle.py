@@ -5,6 +5,7 @@ import puddle.construction.constant as _constant
 import puddle.maths.wrapper as _wrapper
 import puddle.maths.derivatives as _derivatives
 import puddle.maths.common as _common
+import puddle.maths.equation as _equation
 
 
 space = _space.Space
@@ -29,3 +30,5 @@ divide = _common.divide
 square = _common.square
 sqrt = _common.sqrt
 exp = _common.exp
+
+equate = _equation.Equation

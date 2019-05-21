@@ -1,3 +1,7 @@
+from puddle.construction.constant import Constant
+from puddle.construction.variable import Variable
+
+
 class Builder:
     def __init__(self, batch_size=None, sampler=False, placeholder=False):
         """Create a builder, for construction puddle graphs."""
@@ -21,7 +25,11 @@ class Builder:
     def __getitem__(self, variable):
         """Retrieve a built variable, or build it if it has not been built."""
         if variable not in self.built_variables:
-            self.built_variables[variable] = variable.build(self)
+            self.built_variables[variable] = (
+                variable.build(self)
+                if isinstance(variable, Variable)
+                else Constant.wrap(variable)
+            )
 
         return self.built_variables[variable]
 
