@@ -12,7 +12,8 @@ space = _space.Space
 scalar = _space.Scalar
 vector = _space.Vector
 
-variable = _variable
+variable = _variable.Variable
+dependent = _variable.DependentVariable
 
 builder = _builder.Builder
 
