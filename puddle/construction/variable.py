@@ -3,6 +3,7 @@ class Variable:
         """Create a new variable."""
         self.shape = shape
         self.intrinsic_dimension = intrinsic_dimension or self.represented_dimension
+        self.rank = len(self.shape)
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
