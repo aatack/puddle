@@ -5,8 +5,14 @@ import numpy as np
 
 class Constant(Variable):
     def __init__(self, value):
+        super().__init__(Constant.numpy_wrap(value).shape)
         self.value = value
-        self.wrapped_value = np.array(self.value, dtype=np.float32)
+        self.wrapped_value = Constant.numpy_wrap(self.value)
+
+    @staticmethod
+    def numpy_wrap(value):
+        """Wrap the value in a numpy array."""
+        return np.array(value, dtype=np.float32)
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""

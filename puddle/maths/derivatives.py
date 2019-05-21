@@ -1,4 +1,5 @@
 from puddle.construction.variable import Variable
+import tensorflow as tf
 
 
 class Derivative(Variable):
