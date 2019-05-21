@@ -1,4 +1,5 @@
 from puddle.construction.variable import Variable
+from puddle.construction.constant import Constant
 
 
 def wrap_tf_function(tensorflow_function, shape_function):
@@ -6,10 +7,12 @@ def wrap_tf_function(tensorflow_function, shape_function):
 
     def inner_wrap(*args, **kwargs):
         shape = shape_function(*args, **kwargs)
+        wrapped_list_args = [Constant.wrap(arg) for arg in args]
+        wrapped_dict_args = {k: Constant.wrap(v) for k, v in kwargs.items()}
 
         def build_function(variable, builder):
-            mapped_list_args = [builder[arg] for arg in args]
-            mapped_dict_args = {k: builder[v] for k, v in kwargs.items()}
+            mapped_list_args = [builder[arg] for arg in wrapped_list_args]
+            mapped_dict_args = {k: builder[v] for k, v in wrapped_dict_args}
             return tensorflow_function(*mapped_list_args, **mapped_dict_args)
 
         return AnonymousVariable(build_function, shape)
