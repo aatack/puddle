@@ -25,6 +25,13 @@ class Builder:
 
         return self.built_variables[variable]
 
+    def run(self, session, outputs, feed_dict=dict()):
+        """Run the given objects through a tensorflow session."""
+        return session.run(
+            [self[output] for output in outputs],
+            {self[k]: v for k, v in feed_dict.items()},
+        )
+
 
 class BuildParameters:
     def __init__(self, batch_size=None, sampler=False, placeholder=False):
