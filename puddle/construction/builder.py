@@ -89,7 +89,7 @@ class Builder:
         )
         self.optimiser = tf.train.AdamOptimizer().minimize(self.loss)
 
-    def _build_feed_dict(self, independent_variables, loss_weights):
+    def build_feed_dict(self, independent_variables, loss_weights):
         """Build a feed dictionary for the tensorflow session used by the builder."""
         feed_dict = {}
         for variable, placeholder in self.independent_variables.items():

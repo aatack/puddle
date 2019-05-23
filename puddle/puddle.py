@@ -6,6 +6,8 @@ import puddle.maths.wrapper as _wrapper
 import puddle.maths.derivatives as _derivatives
 import puddle.maths.common as _common
 import puddle.maths.equation as _equation
+import puddle.api.sampler as _sampler
+import puddle.api.system as _system
 
 
 space = _space.Space
@@ -32,3 +34,6 @@ sqrt = _common.sqrt
 exp = _common.exp
 
 equate = _equation.Equation
+
+system = _system.System
+sampler = _sampler.Sampler
