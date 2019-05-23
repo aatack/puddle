@@ -1,6 +1,7 @@
 from puddle.construction.constant import Constant
 from puddle.construction.variable import Variable
 import tensorflow as tf
+import numpy as np
 
 
 class Builder:
@@ -11,6 +12,7 @@ class Builder:
         self.session = tf.Session()
 
         self.independent_variables = None
+        self.independent_variable_defaults = None
         self.loss_weights = None
         self.weighted_losses = None
 
@@ -48,30 +50,74 @@ class Builder:
 
     def compile(self, independent_variables, losses, normalise_loss=True):
         """Compile the builder to perform training."""
+        self._setup_independent_variables(independent_variables)
+        self._setup_losses(losses)
+        self._setup_optimiser(normalise_loss)
+        self.initialise()
+
+    def _setup_independent_variables(self, independent_variables):
+        """Set up a dictionary of independent variables to be used for training."""
         if isinstance(independent_variables, set):
             self.independent_variables = {
                 variable: self[variable] for variable in independent_variables
             }
+            self.independent_variable_defaults = {
+                variable: np.zeros(variable.shape) for variable in independent_variables
+            }
         else:
             raise ValueError("independent variables must be a set")
 
+    def _setup_losses(self, losses):
+        """Set up a dictionary of loss weights to prepare for training."""
         self.weighted_losses = []
         if isinstance(losses, set):
             self.loss_weights = {}
             for loss in losses:
-                weight = tf.placeholder(tf.float32, shape=())
+                weight = tf.placeholder(tf.float32, shape=(None,))
                 self.loss_weights[loss] = weight
                 self.weighted_losses.append(weight * tf.reduce_mean(self[loss]))
         else:
             raise ValueError("losses must be a set")
 
+    def _setup_optimiser(self, normalise_losses):
+        """Compile losses and set up an optimiser for training."""
         self.compiled_losses = tf.stack(self.weighted_losses)
         self.loss = (
             tf.reduce_mean(self.compiled_losses)
-            if normalise_loss
+            if normalise_losses
             else tf.reduce_sum(self.compiled_losses)
         )
         self.optimiser = tf.train.AdamOptimizer().minimize(self.loss)
+
+    def _build_feed_dict(self, independent_variables, loss_weights):
+        """Build a feed dictionary for the tensorflow session used by the builder."""
+        feed_dict = {}
+        for variable, placeholder in self.independent_variables.items():
+            feed_dict[placeholder] = []
+            for var_set in independent_variables:
+                feed_dict[placeholder].append(
+                    var_set[variable]
+                    if variable in var_set
+                    else self.independent_variable_defaults[variable]
+                )
+        for loss, placeholder in self.loss_weights.items():
+            feed_dict[placeholder] = []
+            for weight_set in loss_weights:
+                feed_dict[placeholder].append(
+                    weight_set[loss] if loss in weight_set else 0.0
+                )
+        return feed_dict
+
+    def initialise(self):
+        """Initialise the tensorflow session being used."""
+        self.session.run(tf.global_variables_initializer())
+
+    def train_on_batch(self, feed_dict):
+        """Perform a round of training on the given batch of examples."""
+        _, current_loss = self.session.run(
+            [self.optimiser, self.loss], feed_dict=feed_dict
+        )
+        return current_loss
 
 
 def flatten(node):
