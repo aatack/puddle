@@ -17,7 +17,7 @@ class Constant(Variable):
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
-        return tf.constant(self.wrapped_value)
+        return builder.duplicate_for_batch(tf.constant(self.wrapped_value))
 
     @staticmethod
     def wrap(value):

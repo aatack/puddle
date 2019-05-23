@@ -11,6 +11,10 @@ class Builder:
         self.flattened_variables = {}
         self.session = tf.Session()
 
+        self.batch_size_placeholder = None
+        self.duplicate_for_batch = None
+        self._setup_batch_nodes()
+
         self.independent_variables = None
         self.independent_variable_defaults = None
         self.loss_weights = None
@@ -19,6 +23,22 @@ class Builder:
         self.compiled_losses = None
         self.loss = None
         self.optimiser = None
+
+    def _setup_batch_nodes(self):
+        """Set up nodes used to stack constants so they are the right shape."""
+        self.batch_size_placeholder = tf.placeholder(tf.int32, shape=())
+
+        def duplicate_for_batch(node):
+            """Stack a single node into a batch node."""
+            rank = tf.rank(node)
+            return tf.tile(
+                tf.expand_dims(node, axis=0),
+                tf.concat(
+                    [[self.batch_size_placeholder], tf.tile([1], [rank])], axis=0
+                ),
+            )
+
+        self.duplicate_for_batch = duplicate_for_batch
 
     def __getitem__(self, variable):
         """Retrieve a built variable, or build it if it has not been built."""
@@ -87,11 +107,18 @@ class Builder:
             if normalise_losses
             else tf.reduce_sum(self.compiled_losses)
         )
-        self.optimiser = tf.train.AdamOptimizer().minimize(self.loss)
+        try:
+            self.optimiser = tf.train.AdamOptimizer().minimize(self.loss)
+        except ValueError:
+            print("WARNING: no variables to train.")
+            self.optimiser = None
 
     def build_feed_dict(self, independent_variables, loss_weights):
         """Build a feed dictionary for the tensorflow session used by the builder."""
-        feed_dict = {}
+        if len(independent_variables) != len(loss_weights):
+            raise ValueError("lists of variables and losses must be the same length")
+
+        feed_dict = {self.batch_size_placeholder: len(independent_variables)}
         for variable, placeholder in self.independent_variables.items():
             feed_dict[placeholder] = []
             for var_set in independent_variables:
