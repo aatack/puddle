@@ -5,6 +5,7 @@ import numpy as np
 
 class Constant(Variable):
     def __init__(self, value):
+        """Create a constant valued variable."""
         super().__init__(Constant.numpy_wrap(value).shape)
         self.value = value
         self.wrapped_value = Constant.numpy_wrap(self.value)

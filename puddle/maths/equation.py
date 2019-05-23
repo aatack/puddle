@@ -11,4 +11,5 @@ class Equation(Variable):
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
-        return tf.losses.mean_squared_error(builder[self.lhs], builder[self.rhs])
+        difference = builder[self.lhs] - builder[self.rhs]
+        return tf.reduce_mean(tf.square(difference))
