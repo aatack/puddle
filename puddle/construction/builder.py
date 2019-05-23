@@ -12,6 +12,7 @@ class Builder:
         self.session = tf.Session()
 
         self.batch_size_placeholder = None
+        self.batch_indices = None
         self.duplicate_for_batch = None
         self._setup_batch_nodes()
 
@@ -27,6 +28,7 @@ class Builder:
     def _setup_batch_nodes(self):
         """Set up nodes used to stack constants so they are the right shape."""
         self.batch_size_placeholder = tf.placeholder(tf.int32, shape=())
+        self.batch_indices = tf.range(self.batch_size_placeholder)
 
         def duplicate_for_batch(node):
             """Stack a single node into a batch node."""

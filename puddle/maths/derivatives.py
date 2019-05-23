@@ -18,14 +18,24 @@ class Derivative(Variable):
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
+        row_derivative_function = self.row_derivative_function(builder)
+        return tf.map_fn(
+            row_derivative_function, builder.batch_indices, dtype=tf.float32
+        )
+
+    def row_derivative_function(self, builder):
+        """Create a function that takes a row index and returns its derivatives."""
         variable = builder[self.variable]
         with_respect_to = builder[self.with_respect_to]
-        if self.variable.rank == 1:
-            return tf.stack(
-                [
-                    tf.gradients(variable[i], with_respect_to)[0]
-                    for i in range(self.variable.shape[0])
-                ]
-            )
-        else:
-            return tf.gradients(variable, with_respect_to)[0]
+
+        def derivatives_scalar_variable(i):
+            return tf.gradients(variable[i], with_respect_to[i])[0]
+
+        def derivatives_vector_variable(i):
+            return tf.map_fn(lambda v: tf.gradients(v, with_respect_to[i]), variable[i])
+
+        return (
+            derivatives_scalar_variable
+            if self.variable.rank == 0
+            else derivatives_vector_variable
+        )
