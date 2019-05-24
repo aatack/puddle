@@ -19,6 +19,10 @@ class Constant(Variable):
         """Build a tensorflow representation of the variable."""
         return builder.duplicate_for_batch(tf.constant(self.wrapped_value))
 
+    def compile(self, compilation_data):
+        """Compile a tensorflow node for the variable using the given compiler."""
+        return tf.constant(self.wrapped_value)
+
     @staticmethod
     def wrap(value):
         """Wrap the value in a constant variable if it is not already a variable."""

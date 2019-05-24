@@ -13,3 +13,8 @@ class Equation(Variable):
         """Build a tensorflow representation of the variable."""
         difference = builder[self.lhs] - builder[self.rhs]
         return tf.reduce_mean(tf.square(difference))
+
+    def compile(self, compilation_data):
+        """Compile a tensorflow node for the variable using the given compiler."""
+        difference = compilation_data.get(self.lhs) - compilation_data.get(self.rhs)
+        return tf.reduce_mean(tf.square(difference))

@@ -23,6 +23,7 @@ builder = _builder.Builder
 constant = _constant.Constant
 
 compiler = _compiler.Compiler
+compilation_data = _compiler.CompilationData
 
 derivative = _derivatives.Derivative
 wrap_tf_function = _wrapper.wrap_tf_function

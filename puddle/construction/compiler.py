@@ -1,3 +1,5 @@
+from puddle.construction.variable import Variable
+from puddle.construction.constant import Constant
 import tensorflow as tf
 
 
@@ -101,7 +103,11 @@ class CompilationData:
     def get(self, variable):
         """Retrieve the tensorflow node for the given variable."""
         if variable not in self.instances:
-            self.instances[variable] = variable.compile(self)
+            self.instances[variable] = (
+                variable.compile(self)
+                if isinstance(variable, Variable)
+                else Constant.wrap(variable).build(self)
+            )
         return self.instances[variable]
 
     def flatten(self, variable):

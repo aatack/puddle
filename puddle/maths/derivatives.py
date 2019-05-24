@@ -1,8 +1,25 @@
 from puddle.construction.variable import Variable
+from puddle.util.tensors import tensor_map
 import tensorflow as tf
 
 
 class Derivative(Variable):
+    def __init__(self, variable, with_respect_to, times=1):
+        """Represent the derivative of one variable with respect to another."""
+        super().__init__(variable.shape + with_respect_to.shape)
+
+        self.variable = variable
+        self.with_respect_to = with_respect_to
+        self.times = times
+
+    def compile(self, compilation_data):
+        """Compile a tensorflow node for the variable using the given compiler."""
+        variable = compilation_data.get(self.variable)
+        wrt = compilation_data.get(self.with_respect_to)
+        return tensor_map(lambda v: tf.gradients(v, wrt), variable, self.variable.shape)
+
+
+class DeprecatedDerivative(Variable):
     def __init__(self, variable, with_respect_to, times=1):
         """Represent the derivative of one variable with respect to another."""
         super().__init__(variable.shape)
