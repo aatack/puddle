@@ -16,6 +16,10 @@ class Space(Variable):
         """Build a tensorflow representation of the variable."""
         return self.placeholder()
 
+    def compile(self, compilation_data):
+        """Compile a tensorflow node for the variable using the given compiler."""
+        raise Exception("cannot compile independent variables")
+
 
 class Scalar(Space):
     def __init__(self, lower=0.0, upper=1.0):

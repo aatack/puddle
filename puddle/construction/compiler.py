@@ -7,8 +7,6 @@ class Compiler:
         self.independent_variables = self.set_wrap(independent_variables)
         self.equations = self.set_wrap(equations)
 
-        self.built_variables = {}
-
         self.equation_weight_placeholders = {}
 
     def compile(self):
@@ -98,12 +96,23 @@ class CompilationData:
     def __init__(self, placeholders={}):
         """Create a data class for storing tensorflow nodes during compilation."""
         self.instances = {k: v for k, v in placeholders.items()}
+        self.flattened_instances = {}
 
     def get(self, variable):
         """Retrieve the tensorflow node for the given variable."""
         if variable not in self.instances:
             self.instances[variable] = variable.compile(self)
         return self.instances[variable]
+
+    def flatten(self, variable):
+        """Retrieve a flattened version of the variable's tensorflow node."""
+        if variable not in self.flattened_instances:
+            self.flattened_instances[variable] = tf.reshape(self.get(variable), [-1])
+        return self.flattened_instances[variable]
+
+    def join(self, variables):
+        """Flatten each of the given variables and concatenate them."""
+        return tf.concat([self.flatten(variable) for variable in variables], axis=0)
 
     def export_all(self):
         """Return a complete dictionary of variables mapped to tensorflow tensors."""
