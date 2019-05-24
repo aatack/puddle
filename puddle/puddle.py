@@ -9,6 +9,8 @@ import puddle.maths.common as _common
 import puddle.maths.equation as _equation
 import puddle.api.sampler as _sampler
 import puddle.api.system as _system
+import puddle.api.samplers.space as _space_sampler
+import puddle.api.samplers.composite as _composite_sampler
 
 
 space = _space.Space
@@ -41,3 +43,5 @@ equate = _equation.Equation
 
 system = _system.System
 sampler = _sampler.Sampler
+sampler.space = _space_sampler.SpaceSampler
+sampler.composite = _composite_sampler.CompositeSampler
