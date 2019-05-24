@@ -16,7 +16,9 @@ class Derivative(Variable):
         """Compile a tensorflow node for the variable using the given compiler."""
         variable = compilation_data.get(self.variable)
         wrt = compilation_data.get(self.with_respect_to)
-        return tensor_map(lambda v: tf.gradients(v, wrt), variable, self.variable.shape)
+        return tensor_map(
+            lambda v: tf.gradients(v, wrt)[0], variable, self.variable.shape
+        )
 
     def add_compiled_structure(self, structure):
         """Add the compiled structure of the variable to a structure dictionary."""

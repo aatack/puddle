@@ -71,7 +71,7 @@ class DeprecatedDependentVariable(Variable):
 class DependentVariable(Variable):
     def __init__(self, arguments, layers):
         """Create a variable which is a function of one or more dependents."""
-        super().__init__((layers[-1][0],))
+        super().__init__(list_wrap(layers)[-1][0])
 
         self.arguments = list_wrap(arguments)
         self.layers = list_wrap(layers)
