@@ -2,6 +2,7 @@ import puddle.construction.space as _space
 import puddle.construction.variable as _variable
 import puddle.construction.builder as _builder
 import puddle.construction.constant as _constant
+import puddle.construction.compiler as _compiler
 import puddle.maths.wrapper as _wrapper
 import puddle.maths.derivatives as _derivatives
 import puddle.maths.common as _common
@@ -20,6 +21,8 @@ dependent = _variable.DependentVariable
 builder = _builder.Builder
 
 constant = _constant.Constant
+
+compiler = _compiler.Compiler
 
 derivative = _derivatives.Derivative
 wrap_tf_function = _wrapper.wrap_tf_function
