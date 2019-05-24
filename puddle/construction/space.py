@@ -20,6 +20,11 @@ class Space(Variable):
         """Compile a tensorflow node for the variable using the given compiler."""
         raise Exception("cannot compile independent variables")
 
+    def add_compiled_structure(self, structure):
+        """Add the compiled structure of the variable to a structure dictionary."""
+        if self not in structure:
+            structure[self] = tf.float32
+
 
 class Scalar(Space):
     def __init__(self, lower=0.0, upper=1.0):

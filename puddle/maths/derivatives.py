@@ -18,6 +18,13 @@ class Derivative(Variable):
         wrt = compilation_data.get(self.with_respect_to)
         return tensor_map(lambda v: tf.gradients(v, wrt), variable, self.variable.shape)
 
+    def add_compiled_structure(self, structure):
+        """Add the compiled structure of the variable to a structure dictionary."""
+        if self not in structure:
+            structure[self] = tf.float32
+            self.variable.add_compiled_structure(structure)
+            self.with_respect_to.add_compiled_structure(structure)
+
 
 class DeprecatedDerivative(Variable):
     def __init__(self, variable, with_respect_to, times=1):

@@ -29,7 +29,7 @@ class Compiler:
     def map_inputs(self, inputs):
         """Compile one set of the system's equations."""
         independent_variable_placeholders, equation_weight_placeholders = inputs
-        compilation_data = CompilationData(self.join_dictionaries(*inputs))
+        compilation_data = CompilationData(independent_variable_placeholders)
         equation_nodes = self.compile_equations(
             compilation_data, equation_weight_placeholders
         )

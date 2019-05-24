@@ -1,5 +1,6 @@
 from puddle.construction.variable import Variable
 from puddle.construction.constant import Constant
+import tensorflow as tf
 
 
 def wrap_tf_function(tensorflow_function, shape_function):
@@ -9,6 +10,7 @@ def wrap_tf_function(tensorflow_function, shape_function):
         shape = shape_function(*args, **kwargs)
         wrapped_list_args = [Constant.wrap(arg) for arg in args]
         wrapped_dict_args = {k: Constant.wrap(v) for k, v in kwargs.items()}
+        all_variables = [arg for arg in args] + [arg for arg in kwargs.items()]
 
         def build_function(variable, builder):
             mapped_list_args = [builder[arg] for arg in wrapped_list_args]
@@ -23,18 +25,24 @@ def wrap_tf_function(tensorflow_function, shape_function):
             return tensorflow_function(*mapped_list_args, **mapped_dict_args)
 
         return AnonymousVariable(
-            build_function, shape, compile_function=compile_function
+            build_function,
+            shape,
+            compile_function=compile_function,
+            input_variables=all_variables,
         )
 
     return inner_wrap
 
 
 class AnonymousVariable(Variable):
-    def __init__(self, build_function, shape, compile_function=None):
+    def __init__(
+        self, build_function, shape, compile_function=None, input_variables=[]
+    ):
         """Create an anonymous variable from its shape and build function."""
         super().__init__(shape)
         self.build_function = build_function
         self.compile_function = compile_function
+        self.input_variables = input_variables
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
@@ -43,6 +51,13 @@ class AnonymousVariable(Variable):
     def compile(self, compilation_data):
         """Compile a tensorflow node for the variable using the given compiler."""
         return self.compile_function(self, compilation_data)
+
+    def add_compiled_structure(self, structure):
+        """Add the compiled structure of the variable to a structure dictionary."""
+        if self not in structure:
+            structure[self] = tf.float32
+            for variable in input_variables:
+                variable.add_compiled_structure(structure)
 
 
 class ShapeFunctions:

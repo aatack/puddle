@@ -18,3 +18,10 @@ class Equation(Variable):
         """Compile a tensorflow node for the variable using the given compiler."""
         difference = compilation_data.get(self.lhs) - compilation_data.get(self.rhs)
         return tf.reduce_mean(tf.square(difference))
+
+    def add_compiled_structure(self, structure):
+        """Add the compiled structure of the variable to a structure dictionary."""
+        if self not in structure:
+            structure[self] = tf.float32
+            self.lhs.add_compiled_structure(structure)
+            self.rhs.add_compiled_structure(structure)

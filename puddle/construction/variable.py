@@ -1,14 +1,25 @@
 from puddle.util.guid import guid
 import puddle.util.reusablenet as rnet
 import puddle.util.batchless as bl
+import tensorflow as tf
 
 
 class Variable:
+
+    variable_id = 0
+
     def __init__(self, shape, intrinsic_dimension=None):
         """Create a new variable."""
         self.shape = tuple(shape)
         self.intrinsic_dimension = intrinsic_dimension or self.represented_dimension
         self.rank = len(self.shape)
+
+        self.id = Variable.variable_id
+        Variable.variable_id += 1
+
+    def __lt__(self, other):
+        """Implement variable sorting so that dictionaries can be flattened."""
+        return self.id < other.id
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
@@ -77,6 +88,13 @@ class DependentVariable(Variable):
     def compile(self, compilation_data):
         """Compile a tensorflow node for the variable using the given compiler."""
         return self.apply_to(compilation_data.join(self.arguments))
+
+    def add_compiled_structure(self, structure):
+        """Add the compiled structure of the variable to a structure dictionary."""
+        if self not in structure:
+            structure[self] = tf.float32
+            for argument in self.arguments:
+                argument.add_compiled_structure(structure)
 
 
 def product(values):
