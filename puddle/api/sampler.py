@@ -1,5 +1,4 @@
 from random import random
-import numpy as np
 
 
 class Sampler:
@@ -13,16 +12,13 @@ class Sampler:
         raise Exception("get_separated_sample has been removed")
 
     def get_sample(self, size):
-        """Get a batch of samples."""
-        return [self.get_individual_sample() for _ in range(size)]
-
-    def get_individual_sample(self):
         """
-        Retrieve a sample from the sampler.
+        Retrieve a batch of samples from the sampler.
 
-        The sample should be a tuple of two dictionaries, the first mapping
+        Each sample should be a tuple of two dictionaries, the first mapping
         independent variables to their values (as numpy arrays) and the second
-        mapping equations to their weights (as floats).
+        mapping equations to their weights (as floats).  All values should be
+        given as numpy arrays, where the 0th dimension is the size of the batch.
         """
         raise NotImplementedError()
 
@@ -37,7 +33,7 @@ class PlaceholderSampler(Sampler):
         """Create a placeholder sampler which throws an error when sampled."""
         super().__init__({}, {})
 
-    def get_individual_sample(self):
+    def get_sample(self, size):
         """Warn the user that a placeholder sampler is selected."""
         raise Exception("a placeholder sampler is currently in use: please provide one")
 
