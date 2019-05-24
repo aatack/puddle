@@ -18,6 +18,10 @@ class Variable:
         """Compile a tensorflow node for the variable using the given compiler."""
         raise NotImplementedError()
 
+    def add_compiled_structure(self, structure):
+        """Add the compiled structure of the variable to a structure dictionary."""
+        raise NotImplementedError()
+
     @property
     def represented_dimension(self):
         """Calculate the intrinsic dimension of the variable."""
