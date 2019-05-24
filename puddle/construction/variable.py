@@ -31,8 +31,8 @@ class DeprecatedDependentVariable(Variable):
     def __init__(self, arguments, layers):
         """Create a dependent variable which is calculated from dependents."""
         super().__init__((layers[-1][0],))
-        self.arguments = arguments if isinstance(arguments, list) else [arguments]
-        self.layers = layers if isinstance(layers, list) else [layers]
+        self.arguments = list_wrap(arguments)
+        self.layers = list_wrap(layers)
 
         self.input_dimension = sum(
             [variable.represented_dimension for variable in self.arguments]
@@ -53,8 +53,9 @@ class DependentVariable(Variable):
     def __init__(self, arguments, layers):
         """Create a variable which is a function of one or more dependents."""
         super().__init__((layers[-1][0],))
-        self.arguments = arguments
-        self.layers = layers
+
+        self.arguments = list_wrap(arguments)
+        self.layers = list_wrap(layers)
 
         self.apply_to = self.make_application_function()
 
@@ -72,3 +73,16 @@ class DependentVariable(Variable):
     def compile(self, compilation_data):
         """Compile a tensorflow node for the variable using the given compiler."""
         return self.apply_to(compilation_data.join(self.arguments))
+
+
+def product(values):
+    """Calculate the product of a list of values."""
+    total = 1
+    for value in values:
+        total *= value
+    return total
+
+
+def list_wrap(value):
+    """Wrap the value in a list if it is not already a list."""
+    return value if isinstance(value, list) else [value]
