@@ -96,7 +96,7 @@ class Compiler:
             return values
         elif isinstance(values, dict):
             return set(values.values())
-        elif isinstance(value, list):
+        elif isinstance(values, list):
             return set(values)
         else:
             return {values}
