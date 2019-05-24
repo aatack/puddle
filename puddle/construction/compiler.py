@@ -18,13 +18,13 @@ class Compiler:
         )
         equation_weight_placeholders = self.build_equation_weight_placeholders()
 
-        output = tf.map_fn(
+        equation_nodes, all_nodes = tf.map_fn(
             self.map_inputs,
             (independent_variable_placeholders, equation_weight_placeholders),
             dtype=self.get_mapped_type(),
         )
-        output[1]["batch_mean"] = tf.reduce_mean(output[1]["mean"])
-        return output
+        equation_nodes["batch_mean"] = tf.reduce_mean(equation_nodes["mean"])
+        return independent_variable_placeholders, equation_nodes, all_nodes
 
     def map_inputs(self, inputs):
         """Compile one set of the system's equations."""
@@ -34,11 +34,7 @@ class Compiler:
             compilation_data, equation_weight_placeholders
         )
 
-        return (
-            independent_variable_placeholders,
-            equation_nodes,
-            compilation_data.export_all(),
-        )
+        return equation_nodes, compilation_data.export_all()
 
     def compile_equations(self, compilation_data, equation_weight_placeholders):
         """Create weighted nodes for each equation but do not aggregate them."""
@@ -69,7 +65,7 @@ class Compiler:
     def get_mapped_type(self):
         """Return the structure of the tensorflow graph upon compiled."""
         return (
-            self._get_independent_variable_placeholders_structure(),
+            # self._get_independent_variable_placeholders_structure(),
             self._get_equation_nodes_structure(),
             self._get_all_nodes_structure(),
         )
