@@ -22,6 +22,6 @@ class Equation(Variable):
     def add_compiled_structure(self, structure):
         """Add the compiled structure of the variable to a structure dictionary."""
         if self not in structure:
-            structure[self] = tf.float32
-            self.lhs.add_compiled_structure(structure)
-            self.rhs.add_compiled_structure(structure)
+            structure.add_key(self, tf.float32)
+            structure.set_variable(self.lhs)
+            structure.set_variable(self.rhs)

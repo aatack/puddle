@@ -19,7 +19,11 @@ class Variable:
 
     def __lt__(self, other):
         """Implement variable sorting so that dictionaries can be flattened."""
-        return self.id < other.id
+        return self.id < other.id if isinstance(other, Variable) else self.id < other
+
+    def __gt__(self, other):
+        """Implement variable sorting so that dictionaries can be flattened."""
+        return self.id > other.id if isinstance(other, Variable) else self.id > other
 
     def build(self, builder):
         """Build a tensorflow representation of the variable."""
@@ -92,9 +96,9 @@ class DependentVariable(Variable):
     def add_compiled_structure(self, structure):
         """Add the compiled structure of the variable to a structure dictionary."""
         if self not in structure:
-            structure[self] = tf.float32
+            structure.add_key(self, tf.float32)
             for argument in self.arguments:
-                argument.add_compiled_structure(structure)
+                structure.set_variable(argument)
 
 
 def product(values):

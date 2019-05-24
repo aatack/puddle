@@ -55,9 +55,9 @@ class AnonymousVariable(Variable):
     def add_compiled_structure(self, structure):
         """Add the compiled structure of the variable to a structure dictionary."""
         if self not in structure:
-            structure[self] = tf.float32
+            structure.add_key(self, tf.float32)
             for variable in input_variables:
-                variable.add_compiled_structure(structure)
+                structure.set_variable(variable)
 
 
 class ShapeFunctions:
