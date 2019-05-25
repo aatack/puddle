@@ -184,7 +184,7 @@ class CompiledGraph:
         returned.  If it is an equation, its weight placeholder will be
         returned.  Otherwise, an error will be thrown.
         """
-        return nested_map(self._get_input, variables)
+        return nested_map(self._get_input, variables, map_keys=True, map_values=False)
 
     def _get_input(self, variable):
         """Retrieve a single input's placeholder node."""
@@ -209,21 +209,33 @@ class CompiledGraph:
         def _get_output(variable):
             if variable in equations:
                 return equations[variable]
+            elif variable in self.variable_nodes:
+                return self.variable_nodes[variable]
             else:
                 return self.all_nodes[variable]
 
         return _get_output
 
+    def run(self, session, queries, feed_dict={}, weighted_equations=True):
+        """Run the graph given some inputs."""
+        return session.run(
+            self.get_outputs(queries, weighted_equations=weighted_equations),
+            feed_dict=self.get_inputs(feed_dict),
+        )
 
-def nested_map(f, data):
+
+def nested_map(f, data, map_values=True, map_keys=False):
     """Map over a data structure, keeping form while changing root values."""
+    recall = lambda x: nested_map(f, x, map_keys=map_keys, map_values=map_values)
+    recall_value = recall if map_values else lambda v: v
+    recall_key = recall if map_keys else lambda k: k
     if isinstance(data, dict):
-        return {key: f(datum) for key, datum in data.items()}
+        return {recall_key(key): recall_value(value) for key, value in data.items()}
     elif isinstance(data, tuple):
-        return tuple(f(datum) for datum in data)
+        return tuple(recall(datum) for datum in data)
     elif isinstance(data, list):
-        return [nested_map(f, datum) for datum in data]
+        return [recall(datum) for datum in data]
     elif isinstance(data, set):
-        return {nested_map(f, datum) for datum in data}
+        return {recall(datum) for datum in data}
     else:
         return f(data)
