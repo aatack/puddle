@@ -45,13 +45,16 @@ class System:
                 "cannot export variables until the system has been compiled"
             )
 
-        if arguments is None:
-            arguments = variable.arguments
+        arguments = variable.arguments if arguments is None else list_wrap(arguments)
 
         output_node = self.graph.get_outputs(variable)
 
         def wrap_input(input_tensor):
-            single_wrapped = np.array(input_tensor)
+            single_wrapped = (
+                input_tensor
+                if isinstance(input_tensor, np.ndarray)
+                else np.array(input_tensor)
+            )
             return (
                 single_wrapped
                 if len(single_wrapped.shape) == len(variable.shape) + 1
@@ -75,3 +78,8 @@ class System:
                 return output
 
         return calculate
+
+
+def list_wrap(value):
+    """Wrap the value in a list if it is not already a list."""
+    return value if isinstance(value, list) else [value]

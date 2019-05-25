@@ -1,13 +1,18 @@
 import tensorflow as tf
 
 
+def identity_function(x, name=None):
+    """Mimics the identity function."""
+    return x
+
+
 activations = {
     "sigmoid": tf.nn.sigmoid,
     "relu": tf.nn.relu,
     "leaky-relu": tf.nn.leaky_relu,
     "tanh": tf.nn.tanh,
     "softmax": tf.nn.softmax,
-    "id": lambda x, name: x,
+    "id": identity_function,
 }
 
 
