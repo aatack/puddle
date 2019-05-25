@@ -24,7 +24,10 @@ class Compiler:
             dtype=self.get_mapped_type(),
         )
         equation_nodes["batch_mean"] = tf.reduce_mean(equation_nodes["mean"])
-        return independent_variable_placeholders, equation_nodes, all_nodes
+        equation_nodes["weights"] = equation_weight_placeholders
+        return CompiledGraph(
+            self, independent_variable_placeholders, equation_nodes, all_nodes
+        )
 
     def map_inputs(self, inputs):
         """Compile one set of the system's equations."""
@@ -163,3 +166,64 @@ class CompilationStructure:
     def __contains__(self, variable):
         """Determine whether or not the variable is already listed."""
         return variable in self.structure
+
+
+class CompiledGraph:
+    def __init__(self, compiler, variable_nodes, equation_nodes, all_nodes):
+        """Create an object for easily accessing compiled nodes."""
+        self.compiler = compiler
+        self.variable_nodes = variable_nodes
+        self.equation_nodes = equation_nodes
+        self.all_nodes = all_nodes
+
+    def get_inputs(self, variables):
+        """
+        For each variable given, return the corresponding input node.
+        
+        If the variable is an independent variable, its placeholder will be
+        returned.  If it is an equation, its weight placeholder will be
+        returned.  Otherwise, an error will be thrown.
+        """
+        return nested_map(self._get_input, variables)
+
+    def _get_input(self, variable):
+        """Retrieve a single input's placeholder node."""
+        if variable in self.variable_nodes:
+            return self.variable_nodes[variable]
+        elif variable in self.equation_nodes["weights"]:
+            return self.equation_nodes["weights"][variable]
+        else:
+            raise ValueError("cannot get the input of an output node")
+
+    def get_outputs(self, variables, weighted_equations=True):
+        """For each variable given, return the corresponding output node."""
+        getter = self._get_output_function(weighted_equations=weighted_equations)
+        return nested_map(getter, variables)
+
+    def _get_output_function(self, weighted_equations=True):
+        """Return a function that retrieves output nodes."""
+        equations = self.equation_nodes[
+            "weighted" if weighted_equations else "unweighted"
+        ]
+
+        def _get_output(variable):
+            if variable in equations:
+                return equations[variable]
+            else:
+                return self.all_nodes[variable]
+
+        return _get_output
+
+
+def nested_map(f, data):
+    """Map over a data structure, keeping form while changing root values."""
+    if isinstance(data, dict):
+        return {key: f(datum) for key, datum in data.items()}
+    elif isinstance(data, tuple):
+        return tuple(f(datum) for datum in data)
+    elif isinstance(data, list):
+        return [nested_map(f, datum) for datum in data]
+    elif isinstance(data, set):
+        return {nested_map(f, datum) for datum in data}
+    else:
+        return f(data)
