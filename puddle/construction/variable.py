@@ -78,6 +78,8 @@ class DependentVariable(Variable):
 
         self.apply_to = self.make_application_function()
 
+        self.callable = None
+
     def make_application_function(self):
         """Make a function which can be called repeatedly to compile the variable."""
         previous_shape = (
@@ -99,6 +101,14 @@ class DependentVariable(Variable):
             structure.add_key(self, tf.float32)
             for argument in self.arguments:
                 structure.set_variable(argument)
+
+    def export(self, system, unwrap_single_values=True):
+        """Export the variable, allowing it to be called like a function."""
+        self.callable = system.export(self, unwrap_single_values=unwrap_single_values)
+
+    def __call__(self, *arguments):
+        """Calculate the value of the variable as a function of its arguments."""
+        return self.callable(arguments)
 
 
 def product(values):
