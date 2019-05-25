@@ -11,6 +11,13 @@ class Sampler:
         """Get a batch of samples, returning variables and equations separately."""
         raise Exception("get_separated_sample has been removed")
 
+    def get_joined_sample(self, size):
+        """Retrieve a batch of samples, then put the results all into one dictionary."""
+        variable_values, weight_values = self.get_sample(size)
+        for weight, value in weight_values.items():
+            variable_values[weight] = value
+        return variable_values
+
     def get_sample(self, size):
         """
         Retrieve a batch of samples from the sampler.

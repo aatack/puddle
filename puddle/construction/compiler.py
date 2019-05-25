@@ -216,6 +216,14 @@ class CompiledGraph:
 
         return _get_output
 
+    def get_mean_losses(self):
+        """Return the node for mean weighted loss for each sample in a batch."""
+        return self.equation_nodes["mean"]
+
+    def get_batch_mean_loss(self):
+        """Return the node for mean weighted loss across all samples in a batch."""
+        return self.equation_nodes["batch_mean"]
+
     def run(self, session, queries, feed_dict={}, weighted_equations=True):
         """Run the graph given some inputs."""
         return session.run(
