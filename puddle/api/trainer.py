@@ -82,3 +82,38 @@ class Trainer:
         if self.optimise_op is None:
             self.error = self.system.graph.get_batch_mean_loss()
             self.optimise_op = self.optimiser.minimize(self.error)
+            self.system.session.run(
+                tf.variables_initializer(self.optimiser.variables())
+            )
+
+    def train(self, iterations=1):
+        """Train the system for the specified number of iterations."""
+        self.initialise_training()
+        for _ in range(iterations):
+            self.perform_training_iteration()
+
+    def perform_training_iteration(self):
+        """Train the system on one batch, including triggering all events."""
+        sample = self.sampler.get_joined_sample(self.batch_size)
+        self._trigger_pre_batch_events(sample)
+        self._train_on_batch(sample)
+        self._trigger_post_batch_events(sample)
+        self.batch_number += 1
+
+    def _trigger_pre_batch_events(self, sample):
+        """Call all callbacks after getting a sample but before training on it."""
+        if len(self.pre_batch_callbacks) > 0:
+            for callback in self.pre_batch_callbacks:
+                callback(self, sample)
+
+    def _trigger_post_batch_events(self, sample):
+        """Call all callbacks after training on the given sample."""
+        if len(self.post_batch_callbacks) > 0:
+            for callback in self.post_batch_callbacks:
+                callback(self, sample)
+
+    def _train_on_batch(self, sample):
+        """Optimise network parameters on the given sample."""
+        self.system.session.run(
+            self.optimise_op, feed_dict=self.system.graph.get_inputs(sample)
+        )
