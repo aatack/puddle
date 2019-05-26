@@ -16,7 +16,7 @@ class Trainer:
     ):
         """Create a trainer which handles the fitting of a system of equations."""
         self.system = system
-        self.sampler_list = samplers if samplers is not None else self.default_samplers
+        self.sampler_list = samplers if samplers is not None else []
         self.optimiser = optimiser if optimiser is not None else self.default_optimiser
         self.batch_size = batch_size or 32
 
@@ -41,16 +41,6 @@ class Trainer:
 
         self.sampler = None
         self.refresh_sampler()
-
-    @property
-    def default_samplers(self):
-        """Return a sampler that takes uniformly from the space of variables."""
-        return [
-            (
-                SpaceSampler(self.system.independent_variables, self.system.equations),
-                1.0,
-            )
-        ]
 
     @property
     def default_optimiser(self):

@@ -57,13 +57,13 @@ class HyperplaneSampler(SubspaceSampler):
 
     def map_latent_variables(self, latent_tensor):
         """Map the latent variables into the space of the sampler."""
-        return self.origin + np.sum(self.axes * latent_tensor, axis=0)
+        return np.squeeze(self.origin + np.sum(self.axes * latent_tensor, axis=0))
 
     @staticmethod
     def _preformat_axes(axes):
         """Format the axes to be in the form of a rank-2 numpy tensor."""
         if not isinstance(axes, np.ndarray):
-            axes = numpy.array(axes)
+            axes = np.array(axes)
         while len(axes.shape) < 2:
             axes = np.array([axes])
         return axes

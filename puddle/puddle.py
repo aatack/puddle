@@ -47,6 +47,6 @@ system = _system.System
 sampler = _sampler.Sampler
 sampler.space = _space_sampler.SpaceSampler
 sampler.composite = _composite_sampler.CompositeSampler
+sampler.hyperplane = _subspace.HyperplaneSampler
 
 trainer = _trainer.Trainer
-hyperplane_sampler = _subspace.HyperplaneSampler
