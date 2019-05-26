@@ -1,3 +1,4 @@
+import puddle.construction.repository as _repository
 import puddle.construction.space as _space
 import puddle.construction.variable as _variable
 import puddle.construction.builder as _builder
@@ -14,6 +15,7 @@ import puddle.api.samplers.composite as _composite_sampler
 import puddle.api.samplers.subspace as _subspace
 import puddle.api.trainer as _trainer
 
+repository = _repository.PuddleRepository
 
 space = _space.Space
 scalar = _space.Scalar

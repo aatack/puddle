@@ -5,7 +5,7 @@ import tensorflow as tf
 class Equation(Variable):
     def __init__(self, lhs, rhs=0.0):
         """Create a loss term in which the two sides should be equal."""
-        super().__init__(())
+        super().__init__((), is_equation=True)
         self.lhs = lhs
         self.rhs = rhs
 

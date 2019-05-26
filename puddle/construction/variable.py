@@ -1,3 +1,4 @@
+from puddle.construction.repository import PuddleRepository
 from puddle.util.guid import guid
 import puddle.util.reusablenet as rnet
 import puddle.util.batchless as bl
@@ -8,11 +9,19 @@ class Variable:
 
     variable_id = 0
 
-    def __init__(self, shape, intrinsic_dimension=None):
+    def __init__(
+        self, shape, intrinsic_dimension=None, is_independent=False, is_equation=False
+    ):
         """Create a new variable."""
         self.shape = tuple(shape)
         self.intrinsic_dimension = intrinsic_dimension or self.represented_dimension
         self.rank = len(self.shape)
+
+        self.is_independent = is_independent
+        self.is_equation = is_equation
+        PuddleRepository.register_variable(
+            self, is_independent=self.is_independent, is_equation=self.is_equation
+        )
 
         self.id = Variable.variable_id
         Variable.variable_id += 1
@@ -45,9 +54,10 @@ class Variable:
             product *= dimension
         return product
 
-    def export(self, system, arguments=None, unwrap_single_values=True):
+    def export(self, arguments=None, system=None, unwrap_single_values=True):
         """Export the variable, allowing it to be called like a function."""
-        self.callable = system.export(
+        _system = system if system is not None else PuddleRepository.most_recent_system
+        self.callable = _system.export(
             self, arguments=arguments, unwrap_single_values=unwrap_single_values
         )
 

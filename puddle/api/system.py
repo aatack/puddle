@@ -1,3 +1,4 @@
+from puddle.construction.repository import PuddleRepository
 from puddle.construction.compiler import Compiler
 from puddle.api.sampler import Sampler
 import tensorflow as tf
@@ -5,14 +6,22 @@ import numpy as np
 
 
 class System:
-    def __init__(self, independent_variables, equations):
+    def __init__(self, independent_variables=None, equations=None):
         """Set up a system of equations with some user-friendly functions exposed."""
-        self.independent_variables = independent_variables
-        self.equations = equations
+        self.independent_variables = (
+            independent_variables
+            if independent_variables is not None
+            else PuddleRepository.independent_variables
+        )
+        self.equations = (
+            equations if equations is not None else PuddleRepository.equations
+        )
 
-        self.compiler = Compiler(independent_variables, equations)
+        self.compiler = Compiler(self.independent_variables, self.equations)
         self.graph = None
         self.session = tf.Session()
+
+        PuddleRepository.most_recent_system = self
 
     @property
     def compiled(self):

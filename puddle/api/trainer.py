@@ -1,3 +1,4 @@
+from puddle.api.system import System
 from puddle.api.sampler import Sampler
 from puddle.api.samplers.space import SpaceSampler
 from puddle.api.samplers.composite import CompositeSampler
@@ -7,7 +8,7 @@ import tensorflow as tf
 class Trainer:
     def __init__(
         self,
-        system,
+        system=None,
         samplers=None,
         optimiser=None,
         batch_size=None,
@@ -25,7 +26,7 @@ class Trainer:
 
         self.sampler = None
 
-        self.system = system
+        self.system = system if system is not None else System()
         self.sampler_list = samplers if samplers is not None else []
         self.optimiser = optimiser if optimiser is not None else self.default_optimiser
         self.batch_size = batch_size or 32

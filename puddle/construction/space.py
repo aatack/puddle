@@ -5,7 +5,7 @@ import tensorflow as tf
 class Space(Variable):
     def __init__(self, shape):
         """Create a new space."""
-        super().__init__(shape)
+        super().__init__(shape, is_independent=True)
 
     def placeholder(self):
         """Create a tensorflow node that allows values to be fed in."""
