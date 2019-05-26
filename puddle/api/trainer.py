@@ -15,6 +15,16 @@ class Trainer:
         post_batch_callbacks=None,
     ):
         """Create a trainer which handles the fitting of a system of equations."""
+        self.batch_number = 0
+        self.epoch = None
+
+        self.queries = {}
+
+        self.error = None
+        self.optimise_op = None
+
+        self.sampler = None
+
         self.system = system
         self.sampler_list = samplers if samplers is not None else []
         self.optimiser = optimiser if optimiser is not None else self.default_optimiser
@@ -31,15 +41,6 @@ class Trainer:
             else self.default_post_batch_callbacks
         )
 
-        self.batch_number = 0
-        self.epoch = None
-
-        self.queries = {}
-
-        self.error = None
-        self.optimise_op = None
-
-        self.sampler = None
         self.refresh_sampler()
 
     @property
@@ -55,7 +56,13 @@ class Trainer:
     @property
     def default_post_batch_callbacks(self):
         """Return a list of default post-batch callbacks."""
-        return []
+        self.add_query("epoch", "error")
+
+        def log_epoch(trainer, data):
+            if data["epoch"] % 100 == 0:
+                print("Epoch: {}\tError: {}".format(data["epoch"], data["error"]))
+
+        return [log_epoch]
 
     def refresh_sampler(self):
         """Produce a composite sampler from the currently registered samplers."""
