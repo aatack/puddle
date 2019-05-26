@@ -1,6 +1,3 @@
-from random import random
-
-
 class Sampler:
     def __init__(self, independent_variables, equations):
         """Create a new sampler."""

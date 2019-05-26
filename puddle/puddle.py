@@ -11,6 +11,7 @@ import puddle.api.sampler as _sampler
 import puddle.api.system as _system
 import puddle.api.samplers.space as _space_sampler
 import puddle.api.samplers.composite as _composite_sampler
+import puddle.api.samplers.subspace as _subspace
 import puddle.api.trainer as _trainer
 
 
@@ -48,3 +49,4 @@ sampler.space = _space_sampler.SpaceSampler
 sampler.composite = _composite_sampler.CompositeSampler
 
 trainer = _trainer.Trainer
+hyperplane_sampler = _subspace.HyperplaneSampler
