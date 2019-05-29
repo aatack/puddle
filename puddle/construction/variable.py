@@ -65,6 +65,20 @@ class Variable:
         """Calculate the value of the variable as a function of its arguments."""
         return self.callable(*arguments)
 
+    @property
+    def name(self):
+        """Return a string representation of the node."""
+        return "var{}".format(self.id)
+
+    @property
+    def latex_name(self):
+        """Return some LaTeX to represent the variable."""
+        return self.name
+
+    def __str__(self):
+        """Return the variable's name."""
+        return self.name
+
 
 class DeprecatedDependentVariable(Variable):
     def __init__(self, arguments, layers):
