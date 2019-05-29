@@ -15,6 +15,7 @@ import puddle.api.samplers.composite as _composite_sampler
 import puddle.api.samplers.subspace as _subspace
 import puddle.api.trainer as _trainer
 
+
 repository = _repository.PuddleRepository
 
 space = _space.Space
