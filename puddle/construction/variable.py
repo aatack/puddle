@@ -91,7 +91,7 @@ class DeprecatedDependentVariable(Variable):
 class DependentVariable(Variable):
     def __init__(self, arguments, layers):
         """Create a variable which is a function of one or more dependents."""
-        super().__init__(list_wrap(layers)[-1][0])
+        super().__init__(wrap_int_in_tuple(list_wrap(layers)[-1][0]))
 
         self.arguments = list_wrap(arguments)
         self.layers = list_wrap(layers)
@@ -134,3 +134,8 @@ def product(values):
 def list_wrap(value):
     """Wrap the value in a list if it is not already a list."""
     return value if isinstance(value, list) else [value]
+
+
+def wrap_int_in_tuple(value):
+    """Wrap a value, expected to be an ineger, in a tuple if it is not already."""
+    return (value,) if isinstance(value, int) else value
