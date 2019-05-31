@@ -1,3 +1,6 @@
+import puddle.puddle as pd
+
+
 layers = [(10, "tanh"), (1, "id")]
 
 x = pd.scalar()
