@@ -94,9 +94,12 @@ class Trainer:
         self.initialise_training()
         epochs = []
 
-        for _ in range(iterations):
-            queries = self.perform_training_iteration()
-            epochs.append(queries)
+        try:
+            for _ in range(iterations):
+                queries = self.perform_training_iteration()
+                epochs.append(queries)
+        except KeyboardInterrupt:
+            pass
 
         return epochs
 
