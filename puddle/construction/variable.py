@@ -44,7 +44,10 @@ class Variable:
 
     def add_compiled_structure(self, structure):
         """Add the compiled structure of the variable to a structure dictionary."""
-        raise NotImplementedError()
+        if self not in structure:
+            structure.add_key(self, tf.float32)
+            for argument in self.arguments:
+                structure.set_variable(argument)
 
     @property
     def represented_dimension(self):
@@ -78,6 +81,10 @@ class Variable:
     def __str__(self):
         """Return the variable's name."""
         return self.name
+
+    def __getitem__(self, i):
+        """Return an indexed variable for the given index."""
+        return IndexedVariable(self, i)
 
 
 class DeprecatedDependentVariable(Variable):
@@ -129,12 +136,26 @@ class DependentVariable(Variable):
         """Compile a tensorflow node for the variable using the given compiler."""
         return self.apply_to(compilation_data.join(self.arguments))
 
-    def add_compiled_structure(self, structure):
-        """Add the compiled structure of the variable to a structure dictionary."""
-        if self not in structure:
-            structure.add_key(self, tf.float32)
-            for argument in self.arguments:
-                structure.set_variable(argument)
+
+class IndexedVariable(Variable):
+    def __init__(self, target, index):
+        """Create a variable that indexes another variable."""
+        super().__init__(IndexedVariable._calculate_shape(target))
+        self.target = target
+        self.index = index
+
+    @staticmethod
+    def _calculate_shape(target):
+        """Calculate the shape of this variable and throw an error if it is invalid."""
+        if not isinstance(target, Variable):
+            raise ValueError("cannot index an object which is not a Variable")
+        if len(target.shape) == 0:
+            raise ValueError("cannot index a scalar")
+        return target.shape[1:]
+
+    def compile(self, compilation_data):
+        """Compile a tensorflow node for the variable using the given compiler."""
+        return compilation_data.get(self.target)[self.index]
 
 
 def product(values):
