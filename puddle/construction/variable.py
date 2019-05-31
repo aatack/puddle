@@ -26,6 +26,8 @@ class Variable:
         self.id = Variable.variable_id
         Variable.variable_id += 1
 
+        self.callable = None
+
     def __lt__(self, other):
         """Implement variable sorting so that dictionaries can be flattened."""
         return self.id < other.id if isinstance(other, Variable) else self.id < other
@@ -59,6 +61,9 @@ class Variable:
 
     def export(self, arguments=None, system=None, unwrap_single_values=True):
         """Export the variable, allowing it to be called like a function."""
+        if self.callable is not None:
+            return
+
         _system = system if system is not None else PuddleRepository.most_recent_system
         self.callable = _system.export(
             self, arguments=arguments, unwrap_single_values=unwrap_single_values
