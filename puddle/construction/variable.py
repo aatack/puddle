@@ -79,8 +79,8 @@ class Variable:
         return "var{}".format(self.id)
 
     @property
-    def latex_name(self):
-        """Return some LaTeX to represent the variable."""
+    def tex_name(self):
+        """Return some TeX to represent the variable."""
         return self.name
 
     def __str__(self):
