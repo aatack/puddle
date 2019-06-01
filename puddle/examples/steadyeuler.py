@@ -2,6 +2,8 @@ import puddle.puddle as pd
 
 
 layers = [((10), "tanh"), ((), "id")]
+u_infinity = 5.0
+back_pressure = 1.0
 
 x = pd.scalar()
 y = pd.scalar()
@@ -25,6 +27,13 @@ equations = [
     pd.equate(pd.add(pd.derivative(rho_uu, x), pd.derivative(rho_uv, y)), dpdx),
     pd.equate(pd.add(pd.derivative(rho_uv, x), pd.derivative(rho_vv, y)), dpdy),
 ]
+
+upstream_boundary_conditions = [
+    pd.equate(u, pd.constant(u_infinity)),
+    pd.equate(v, pd.constant(0.0)),
+]
+
+downstream_boundary_condition = pd.equate(p, pd.constant(back_pressure))
 
 trainer = pd.trainer()
 trainer.add_sampler(pd.sampler.space([x, y], equations))
