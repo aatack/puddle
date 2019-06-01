@@ -14,7 +14,7 @@ import puddle.api.samplers.space as _space_sampler
 import puddle.api.samplers.composite as _composite_sampler
 import puddle.api.samplers.subspace as _subspace
 import puddle.api.trainer as _trainer
-import puddle.visualisation.plot as _plot
+import puddle.visualisation.linegraph as _line_graph
 
 
 repository = _repository.PuddleRepository
@@ -55,4 +55,4 @@ sampler.hyperplane = _subspace.HyperplaneSampler
 
 trainer = _trainer.Trainer
 
-plot = _plot.Plot
+line_graph = _line_graph.LineGraph
