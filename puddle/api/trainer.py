@@ -83,7 +83,7 @@ class Trainer:
             self.system.compile()
 
         if self.optimise_op is None:
-            self.error = self.system.graph.get_batch_mean_loss()
+            self.error = self.system.graph.get_batch_mean_error()
             self.optimise_op = self.optimiser.minimize(self.error)
             self.system.session.run(
                 tf.variables_initializer(self.optimiser.variables())
@@ -160,8 +160,8 @@ class Trainer:
     def _get_string_query_options(self):
         """Get a list of options which can be used to add non-variable queries."""
         return {
-            "mean_error": lambda: self.system.graph.get_mean_losses(),
-            "error": lambda: self.system.graph.get_batch_mean_loss(),
+            "mean_error": lambda: self.system.graph.get_mean_errors(),
+            "error": lambda: self.system.graph.get_batch_mean_error(),
             "epoch": lambda: self._get_epoch_node(),
         }
 
