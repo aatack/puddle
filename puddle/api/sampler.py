@@ -31,6 +31,15 @@ class Sampler:
         """Create and return a placeholder sampler."""
         return PlaceholderSampler()
 
+    @staticmethod
+    def aggregate_variables_and_equations(samplers):
+        """Return a summary of all variables and equations in a list of samplers."""
+        aggregate_variables, aggregate_equations = set(), set()
+        for sampler in samplers:
+            aggregate_variables = aggregate_variables | sampler.independent_variables
+            aggregate_equations = aggregate_equations | sampler.equations
+        return aggregate_variables, aggregate_equations
+
 
 class PlaceholderSampler(Sampler):
     def __init__(self):
