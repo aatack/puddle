@@ -1,3 +1,7 @@
+from puddle.construction.variable import Variable
+from puddle.construction.space import Space
+from matplotlib import rc
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -33,8 +37,31 @@ class HeatMap:
             rc("font", **{"family": "serif", "serif": ["Computer Modern"]})
             rc("text", usetex=True)
 
+        self.figure = None
+        self.image = None
+
     def _get_z_data(self):
         """Recalculate the values and return them."""
-        return tf.reshape(
+        return np.reshape(
             self.z(self.x_inputs, self.y_inputs), [self.fidelity, self.fidelity]
         )
+
+    def ready(self):
+        """Prepare the heat map for displaying."""
+        # plt.ion()
+        self.figure = plt.figure()
+        plt.ion()
+
+        # if self.y_range is not None:
+        #     plt.ylim(*self.y_range)
+        # plt.xlim(self.x.lower, self.x.upper)
+
+        plt.xlabel(self.x.tex_name if self.use_tex else self.x.name)
+        plt.ylabel(self.y.tex_name if self.use_tex else self.y.name)
+
+        self.image = plt.imshow(self._get_z_data())
+        plt.show()
+
+    def update(self):
+        """Update the rendered heat map."""
+        self.image.set_data(self._get_z_data())

@@ -1,7 +1,7 @@
 import puddle.puddle as pd
 
 
-layers = [(10, "tanh"), (1, "id")]
+layers = [((10), "tanh"), ((), "id")]
 
 x = pd.scalar()
 y = pd.scalar()
