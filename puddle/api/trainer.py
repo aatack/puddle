@@ -170,3 +170,13 @@ class Trainer:
         if self.epoch is None:
             self.epoch = tf.placeholder(tf.int32, shape=())
         return self.epoch
+
+    def every(self, period, callback):
+        """Perform a post-batch callback every n epochs."""
+        self.add_query("epoch")
+
+        def wrapped_callback(trainer, queries):
+            if queries["epoch"] % period == 0:
+                callback(trainer, queries)
+
+        self.post_batch_callbacks.append(wrapped_callback)

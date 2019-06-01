@@ -52,7 +52,7 @@ class LineGraph:
         """Get the data to plot on the y-axis."""
         return self.y(self.xs)
 
-    def open(self):
+    def ready(self):
         """Plot the y-value as a function of the x-value."""
         plt.ion()
         self.figure = plt.figure()
@@ -72,3 +72,8 @@ class LineGraph:
         """Update the data shown on the graph."""
         self.line.set_ydata(self._get_y_data())
         self.figure.canvas.draw()
+
+    def update_during_training(self, trainer, update_frequency):
+        """Update the graph every n epochs during training."""
+        self.ready()
+        trainer.every(update_frequency, lambda _1, _2: self.update())
