@@ -15,6 +15,7 @@ import puddle.api.samplers.composite as _composite_sampler
 import puddle.api.samplers.subspace as _subspace
 import puddle.api.trainer as _trainer
 import puddle.visualisation.linegraph as _line_graph
+import puddle.visualisation.heatmap as _heat_map
 
 
 repository = _repository.PuddleRepository
@@ -56,3 +57,4 @@ sampler.hyperplane = _subspace.HyperplaneSampler
 trainer = _trainer.Trainer
 
 line_graph = _line_graph.LineGraph
+heat_map = _heat_map.HeatMap

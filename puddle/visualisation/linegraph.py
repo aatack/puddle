@@ -34,7 +34,7 @@ class LineGraph:
         self.y = y
         self.y_index = y_index
         self.y_range = y_range
-        self.y.export()
+        self.y.export(x)
 
         self.use_tex = use_tex
 
