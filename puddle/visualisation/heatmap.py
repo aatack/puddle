@@ -65,3 +65,9 @@ class HeatMap:
     def update(self):
         """Update the rendered heat map."""
         self.image.set_data(self._get_z_data())
+        self.figure.canvas.draw()
+
+    def update_during_training(self, trainer, update_frequency):
+        """Update the graph every n epochs during training."""
+        self.ready()
+        trainer.every(update_frequency, lambda _1, _2: self.update())
