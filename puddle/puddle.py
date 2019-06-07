@@ -14,6 +14,7 @@ import puddle.api.samplers.space as _space_sampler
 import puddle.api.samplers.composite as _composite_sampler
 import puddle.api.samplers.subspace as _subspace
 import puddle.api.samplers.merged as _merged
+import puddle.api.samplers.anonymous as _anonymous
 import puddle.api.trainer as _trainer
 import puddle.visualisation.linegraph as _line_graph
 import puddle.visualisation.heatmap as _heat_map
@@ -56,6 +57,7 @@ sampler.constrained = _space_sampler.ConstrainedSpaceSampler
 sampler.composite = _composite_sampler.CompositeSampler
 sampler.hyperplane = _subspace.HyperplaneSampler
 sampler.merged = _merged.MergedSampler
+sampler.anonymous = _anonymous.AnonymousSampler
 
 trainer = _trainer.Trainer
 
