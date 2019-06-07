@@ -52,6 +52,7 @@ equate = _equation.Equation
 system = _system.System
 sampler = _sampler.Sampler
 sampler.space = _space_sampler.SpaceSampler
+sampler.constrained = _space_sampler.ConstrainedSpaceSampler
 sampler.composite = _composite_sampler.CompositeSampler
 sampler.hyperplane = _subspace.HyperplaneSampler
 sampler.merged = _merged.MergedSampler
