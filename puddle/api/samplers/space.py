@@ -80,3 +80,8 @@ class ConstrainedSpaceSampler(Sampler):
             },
             self._get_equations(size),
         )
+
+    @staticmethod
+    def point(space, equations, coordinates):
+        """Create a sampler that repeatedly samples a single point."""
+        return ConstrainedSpaceSampler(space, equations, [(x, x) for x in coordinates])
