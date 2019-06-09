@@ -1,3 +1,4 @@
+from random import uniform
 import puddle.puddle as pd
 
 
@@ -37,3 +38,32 @@ downstream_boundary_condition = pd.equate(p, pd.constant(back_pressure))
 
 trainer = pd.trainer()
 trainer.add_sampler(pd.sampler.space([x, y], equations))
+trainer.add_sampler(
+    pd.sampler.anonymous(
+        [x, y],
+        equations + upstream_boundary_conditions,
+        lambda: {x: x.lower, y: uniform(y.lower, y.upper)},
+        lambda: {
+            equations[0]: 0.0,
+            equations[1]: 0.0,
+            equations[2]: 0.0,
+            upstream_boundary_conditions[0]: 0.5,
+            upstream_boundary_conditions[1]: 0.5,
+        },
+    ),
+    weight=0.1,
+)
+trainer.add_sampler(
+    pd.sampler.anonymous(
+        [x, y],
+        equations + [downstream_boundary_condition],
+        lambda: {x: x.upper, y: uniform(y.lower, y.upper)},
+        lambda: {
+            equations[0]: 0.0,
+            equations[1]: 0.0,
+            equations[2]: 0.0,
+            downstream_boundary_condition: 1.0,
+        },
+    ),
+    weight=0.1,
+)

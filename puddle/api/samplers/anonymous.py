@@ -1,7 +1,7 @@
 from puddle.api.sampler import Sampler
 
 
-class AnonymousSampler:
+class AnonymousSampler(Sampler):
     def __init__(
         self,
         independent_variables,
@@ -38,7 +38,7 @@ class AnonymousSampler:
         for sample in equation_samples:
             for equation in equation_outputs:
                 if equation in sample:
-                    equation_outputs[equation].append(sampler[equation])
+                    equation_outputs[equation].append(sample[equation])
                 else:
                     equation_outputs[equation].append(0.0)
         return variable_outputs, equation_outputs
