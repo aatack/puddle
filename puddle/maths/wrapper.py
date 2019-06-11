@@ -65,3 +65,10 @@ class ShapeFunctions:
     def copy_first_shape(*args, **kwargs):
         """Copies the shape of the first variable."""
         return args[0].shape
+
+    @staticmethod
+    def stack_shapes(*args, **kwargs):
+        """Stacks the shape of each of the unkeyed arguments."""
+        shape = args[0].shape
+        axis = kwargs["axis"]
+        return tuple(shape[:axis]) + (len(args),) + tuple(shape[axis:])

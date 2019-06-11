@@ -12,3 +12,5 @@ divide = wrap_tf_function(tf.divide, copy)
 square = wrap_tf_function(tf.square, copy)
 sqrt = wrap_tf_function(tf.sqrt, copy)
 exp = wrap_tf_function(tf.exp, copy)
+
+stack = wrap_tf_function(tf.stack, ShapeFunctions.stack_shapes)
