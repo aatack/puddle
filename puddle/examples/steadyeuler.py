@@ -6,8 +6,15 @@ layers = [((10), "tanh"), ((), "id")]
 u_infinity = 5.0
 back_pressure = 1.0
 
+
+def parameterise_surface(t):
+    """Return a point on the surface parameterised by t."""
+    raise NotImplementedError()
+
+
 x = pd.scalar()
 y = pd.scalar()
+boundary_layer = pd.vector(2)
 
 u = pd.dependent([x, y], layers)
 v = pd.dependent([x, y], layers)
@@ -33,6 +40,8 @@ upstream_boundary_conditions = [
     pd.equate(u, pd.constant(u_infinity)),
     pd.equate(v, pd.constant(0.0)),
 ]
+
+no_slip_conditions = [pd.equate(u, pd.constant(0.0)), pd.equate(v, pd.constant(0.0))]
 
 downstream_boundary_condition = pd.equate(p, pd.constant(back_pressure))
 
