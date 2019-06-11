@@ -12,9 +12,15 @@ def parameterise_surface(t):
     raise NotImplementedError()
 
 
+def wrap_parameterised_surface():
+    """Wrap a sample from the surface in the appropriate feed dict."""
+    t = uniform(0, 1)
+    _x, _y = parameterise_surface(t)
+    return {x: _x, y: _y}
+
+
 x = pd.scalar()
 y = pd.scalar()
-boundary_layer = pd.vector(2)
 
 u = pd.dependent([x, y], layers)
 v = pd.dependent([x, y], layers)
@@ -75,4 +81,19 @@ trainer.add_sampler(
         },
     ),
     weight=0.1,
+)
+trainer.add_sampler(
+    pd.sampler.anonymous(
+        [x, y],
+        equations + no_slip_conditions,
+        wrap_parameterised_surface,
+        lambda: {
+            equations[0]: 0.1,
+            equations[1]: 0.1,
+            equations[2]: 0.1,
+            no_slip_conditions[0]: 0.35,
+            no_slip_conditions[1]: 0.35,
+        },
+    ),
+    weight=1.0,
 )
