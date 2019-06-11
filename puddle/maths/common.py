@@ -14,3 +14,6 @@ sqrt = wrap_tf_function(tf.sqrt, copy)
 exp = wrap_tf_function(tf.exp, copy)
 
 stack = wrap_tf_function(tf.stack, ShapeFunctions.stack_shapes)
+dot = wrap_tf_function(
+    lambda a, b: tf.reduce_sum(tf.multiply(a, b)), ShapeFunctions.scalar
+)

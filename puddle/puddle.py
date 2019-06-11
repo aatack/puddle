@@ -47,6 +47,8 @@ divide = _common.divide
 square = _common.square
 sqrt = _common.sqrt
 exp = _common.exp
+stack = _common.stack
+dot = _common.dot
 
 equate = _equation.Equation
 

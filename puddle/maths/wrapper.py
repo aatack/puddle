@@ -72,3 +72,8 @@ class ShapeFunctions:
         shape = args[0].shape
         axis = kwargs["axis"]
         return tuple(shape[:axis]) + (len(args),) + tuple(shape[axis:])
+
+    @staticmethod
+    def scalar(*arks, **kwargs):
+        """Return a scalar shape."""
+        return ()
