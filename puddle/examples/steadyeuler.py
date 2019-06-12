@@ -2,7 +2,9 @@ from random import uniform
 import puddle.puddle as pd
 
 
-layers = [((10), "tanh"), ((), "id")]
+dense_layer = ((10,), "tanh")
+id_layer = ((), "id")
+relu_layer = ((), "relu")
 u_infinity = 5.0
 back_pressure = 0.0001
 
@@ -24,10 +26,10 @@ def wrap_parameterised_surface():
 x = pd.scalar()
 y = pd.scalar()
 
-u = pd.dependent([x, y], layers)
-v = pd.dependent([x, y], layers)
-rho = pd.dependent([x, y], layers)
-p = pd.dependent([x, y], layers)
+u = pd.dependent([x, y], [dense_layer, id_layer])
+v = pd.dependent([x, y], [dense_layer, id_layer])
+rho = pd.dependent([x, y], [dense_layer, relu_layer])
+p = pd.dependent([x, y], [dense_layer, relu_layer])
 
 rho_u = pd.multiply(rho, u)
 rho_v = pd.multiply(rho, v)
