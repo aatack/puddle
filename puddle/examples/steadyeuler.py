@@ -4,12 +4,14 @@ import puddle.puddle as pd
 
 layers = [((10), "tanh"), ((), "id")]
 u_infinity = 5.0
-back_pressure = 1.0
+back_pressure = 0.0001
 
 
 def parameterise_surface(t):
     """Return a point on the surface parameterised by t."""
-    raise NotImplementedError()
+
+    # A vertical wall in the middle of the flow
+    return 0.5, 0.25 + 0.5 * t
 
 
 def wrap_parameterised_surface():
@@ -46,6 +48,8 @@ upstream_boundary_conditions = [
     pd.equate(u, pd.constant(u_infinity)),
     pd.equate(v, pd.constant(0.0)),
 ]
+
+side_boundary_condition = pd.equate(v, pd.constant(0.0))
 
 no_slip_conditions = [pd.equate(u, pd.constant(0.0)), pd.equate(v, pd.constant(0.0))]
 
@@ -96,4 +100,21 @@ trainer.add_sampler(
         },
     ),
     weight=1.0,
+)
+trainer.add_sampler(
+    pd.sampler.anonymous(
+        [x, y],
+        equations + [side_boundary_condition],
+        lambda: {
+            x: uniform(x.lower, x.upper),
+            y: y.lower if uniform(0.0, 1.0) < 0.5 else y.upper,
+        },
+        lambda: {
+            equations[0]: 0.2,
+            equations[1]: 0.2,
+            equations[2]: 0.2,
+            side_boundary_condition: 0.4,
+        },
+    ),
+    weight=0.1,
 )
